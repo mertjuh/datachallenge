@@ -1,0 +1,45 @@
+[1/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1464602228450.json
+Line 3317 ERROR: Unterminated string starting at: line 1 column 2061 (char 2060)
+Inserted 3317 out of 3317 documents.
+[2/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1464609546579.json
+Line 4784 ERROR: Unterminated string starting at: line 1 column 72 (char 71)
+Inserted 4784 out of 4784 documents.
+[3/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1464618733587.json
+Line 303 ERROR: Unterminated string starting at: line 1 column 3471 (char 3470)
+Inserted 303 out of 303 documents.
+[4/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1464680391642.json
+Line 5330 ERROR: Unterminated string starting at: line 1 column 4956 (char 4955)
+Inserted 5330 out of 5330 documents.
+[5/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1464723251641.json
+Line 2934 ERROR: Unterminated string starting at: line 1 column 8238 (char 8237)
+
+[35/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1466892972378.json
+Line 6450 ERROR: Unterminated string starting at: line 1 column 1759 (char 1758)
+
+[49/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1467780483206.json
+Line 2620 ERROR: Unterminated string starting at: line 1 column 109 (char 108)
+Inserted 2620 out of 2620 documents.
+[50/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1467792745005.json
+Line 136 ERROR: Unterminated string starting at: line 1 column 607 (char 606)
+Inserted 136 out of 136 documents.
+
+[104/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1470881815545.json
+Line 5591 ERROR: Unterminated string starting at: line 1 column 1783 (char 1782)
+Inserted 5591 out of 5591 documents.
+
+[157/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1474483139842.json
+Line 2237 ERROR: Expecting value: line 1 column 1 (char 0)
+Inserted 17919 out of 17919 documents.
+
+[216/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1478457623782.json
+Line 9902 ERROR: Unterminated string starting at: line 1 column 962 (char 961)
+Inserted 9902 out of 9902 documents.
+
+[281/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1482973345125.json
+Line 12400 ERROR: Unterminated string starting at: line 1 column 1387 (char 1386)
+Inserted 12400 out of 12400 documents.
+
+[350/350]Processing: C:\Users\mert\Downloads\airlines_complete\data\airlines-1490787099697.json
+Line 10682 ERROR: Unterminated string starting at: line 1 column 1038 (char 1037)
+Inserted 10682 out of 10682 documents.
+
