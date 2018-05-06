@@ -1,5 +1,7 @@
 import json
 import glob
+import pymongo
+
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
 
@@ -8,8 +10,11 @@ client = MongoClient('127.0.0.1', 27017)
 db = client.datachallenge
 collection = db.conversation
 
-print('Scanning directory: ', jsonDirectory)
 
+print('Creating index for field \'id\'. ')
+collection.create_index([("id", pymongo.ASCENDING)], unique=True)
+
+print('Scanning directory: ', jsonDirectory)
 
 def process_all_json_files(directory):
     jsonFiles = glob.glob(directory)
