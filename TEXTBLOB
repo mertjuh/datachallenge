@@ -25,3 +25,5 @@ df['SA'] = np.array([analize_sentiment(text) for text in df['text']])
 
 # We display the updated dataframe with the new column:
 df[['text','SA']]
+# We count the amount of positive, neutral and negative tweets:
+df['SA'].value_counts()
