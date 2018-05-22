@@ -5,11 +5,13 @@ import pymongo
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError, DuplicateKeyError
 
+# Everything in one directory
 jsonDirectory = 'C:\\Users\\mert\\Downloads\\airlines_complete\\data\\*.json'
 client = MongoClient('127.0.0.1', 27017)
 db = client.datachallenge
 collection = db.conversation
 
+# Index incomplete. Makes querying faster and decreases running time.
 print('Creating index for field \'id\'. ')
 collection.create_index([("id", pymongo.ASCENDING)], unique=True)
 
@@ -17,12 +19,14 @@ print('Scanning directory: ', jsonDirectory)
 
 
 def process_all_json_files(directory):
+    # Finds files recursively.
     jsonFiles = glob.glob(directory)
     total = len(jsonFiles)
     fileCount = 0
     print('Found a total of: ', total)
 
     for file in jsonFiles:
+        # Opening every file.
         with open(file, 'r') as fp:
             duplicatecount = 0
             jsonlist = []
@@ -30,6 +34,7 @@ def process_all_json_files(directory):
             print('[{}/{}]Processing: {}'.format(fileCount, total, file))
             for cnt, line in enumerate(fp):
                 try:
+                    # One line equals one tweet and its attributes.
                     lineJson = json.loads(line)
                     # jsonlist.append(lineJson)
                     result = collection.insert_one(lineJson)
