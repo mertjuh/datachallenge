@@ -38,7 +38,9 @@ def process_all_conversations():
 def populate_node(root_node):
     process_list = [root_node]
     while process_list:
+        # Remove one node at a time from the list
         process_node = process_list.pop(0)
+        # Find a reply to the root node
         children_query = collection.find({'in_reply_to_status_id': process_node.id})
         for child in children_query:
             child_node = AnyNode(id=child['id'], name=child['user']['name'], text=child['text'], parent=process_node)
