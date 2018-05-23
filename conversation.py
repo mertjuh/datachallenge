@@ -1,6 +1,11 @@
 import pprint
 
 from pymongo import MongoClient
+from anytree import AnyNode, RenderTree
+
+from anytree.exporter import DotExporter
+from termcolor import colored
+# from graphviz import Digraph
 
 jsonDirectory = 'C:\\Users\\mert\\Downloads\\airlines_complete\\data\\*.json'
 client = MongoClient('127.0.0.1', 27017)
@@ -30,30 +35,38 @@ def process_all_conversations():
     pprint.pprint("Average conversation count: {}".format(averageLength))
 
 
-def conversation_length_for_userid(
-        user_id):  # TODO: this is not finished, lacking conversations where user_id doesn't start.
-    process_list = []
-    print("Selecting all tweets from id: {}...".format(user_id))
-    count = 0
-    conversation_query = collection.find({'user.id': user_id, 'in_reply_to_status_id': None})  # starting from user_id
-    for user_id_tweet in conversation_query:
-        count = count + 1
-        # pprint.pprint('Initializing tweet: {}'.format(count))
-        process_list.append(user_id_tweet['id'])
-
-    pprint.pprint(conversation_query.count())
-
-    tweet_sum = 0
+def populate_node(root_node):
+    process_list = [root_node]
     while process_list:
-        conversation_tweet_id = process_list.pop(0)  # remove first item that needs to be processed.
-        tweet_sum = tweet_sum + 1
-        # print("Total tweets: {}".format(tweet_sum))
-        for conversation_child_tweet in collection.find({'in_reply_to_status_id': conversation_tweet_id}):
-            process_list.append(conversation_child_tweet['id'])
+        process_node = process_list.pop(0)
+        children_query = collection.find({'in_reply_to_status_id': process_node.id})
+        for child in children_query:
+            child_node = AnyNode(id=child['id'], name=child['user']['name'], text=child['text'], parent=process_node)
+            child_node.id = child['id']
 
-    pprint.pprint('Total sum of tweets: {}'.format(tweet_sum))
-    conversation_length = tweet_sum / count
-    pprint.pprint('Conversation length: {}'.format(conversation_length))
+            process_list.insert(0, child_node)  # put in from the stack
+
+
+def conversation_length_for_userid(user_id):
+    root_nodes_list = []
+
+    print("Selecting all tweets from id: {}...".format(user_id))
+
+    conversation_query = collection.find({'user.id': user_id, 'in_reply_to_status_id': None})  # starting from user_id
+    for i, root_tweet in enumerate(conversation_query):
+        root_nodes = AnyNode(id=root_tweet['id'], name=root_tweet['user']['name'], text=root_tweet['text'])
+        root_nodes.id = root_tweet['id']  # Not sure if why I need to state this two times.
+        # pprint.pprint("Populating: {}".format(i))
+        populate_node(root_nodes)
+        root_nodes_list.append(root_nodes)
+
+    pprint.pprint('Total sum of root nodes: {}'.format(len(root_nodes_list)))
+    # DotExporter(root_nodes_list[0]).to_picture("test.png")
+    for i,tree in enumerate(root_nodes_list):
+        if tree.height > 2:
+            print("Conversation: {}".format(i))
+            print(RenderTree(tree))
+            print("")
 
 
 print("Running script.")
