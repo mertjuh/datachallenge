@@ -49,6 +49,9 @@ def populate_node(root_node):
             process_list.insert(0, child_node)  # put on top the stack
 
 
+process_set = set()
+
+
 def find_root_tweet(tweet):
     root = tweet
     # pprint.pprint(tweet)
@@ -59,6 +62,8 @@ def find_root_tweet(tweet):
     while 'in_reply_to_status_id' in root:
         parent = collection.find_one({"id": root['in_reply_to_status_id']})
         if parent:
+            if parent['id'] in process_set:  # remove nodes that need to be processed yet.
+                process_set.remove(parent['id'])
             root = parent
         else:
             break
@@ -71,7 +76,6 @@ def find_root_tweet(tweet):
 def conversation_length_for_userid(user_id):
     root_id_list = []
     root_nodes_list = []
-    process_set = set()
 
     print("Selecting all tweets from id: {}...".format(user_id))
 
@@ -85,7 +89,7 @@ def conversation_length_for_userid(user_id):
     for i, tweet in enumerate(conversation_query):
         t = find_root_tweet(tweet)
         # t=tweet
-        if t['id'] not in process_set:
+        if t and t['id'] not in process_set:
             process_set.add(t['id'])
             root_id_list.append(t)
             if i % 1000 == 0:
