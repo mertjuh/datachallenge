@@ -50,26 +50,29 @@ def populate_node(root_node):
 
 
 process_set = set()
+root_dict = dict()
 
 
 def find_root_tweet(tweet):
     root = tweet
-    # pprint.pprint(tweet)
-    # pprint.pprint(tweet['in_reply_to_status_id'])
-
-    # print("FOUND original: {}".format([root['id']]))
+    cache_list = [root]
 
     while 'in_reply_to_status_id' in root:
+
         parent = collection.find_one({"id": root['in_reply_to_status_id']})
         if parent:
-            if parent['id'] in process_set:  # remove nodes that need to be processed yet.
-                process_set.remove(parent['id'])
-            root = parent
+            if parent['id'] in root_dict:  # This node is cached
+                root = root_dict[parent['id']]
+                break
+            else:
+                root = parent
+                cache_list.append(root)
         else:
             break
 
-    # pprint.pprint(root)
-    # print("Root found: {}".format(root['id']))
+    for cache_item in cache_list:
+        root_dict[cache_item['id']] = root
+
     return root
 
 
@@ -88,21 +91,19 @@ def conversation_length_for_userid(user_id):
 
     for i, tweet in enumerate(conversation_query):
         t = find_root_tweet(tweet)
-        # t=tweet
-        if t and t['id'] not in process_set:
-            process_set.add(t['id'])
-            root_id_list.append(t)
-            if i % 1000 == 0:
-                print("{}".format(i))
-
-    for i, tweet in enumerate(conversation_query2):
-        t = find_root_tweet(tweet)
-        # t=tweet
         if t['id'] not in process_set:
             process_set.add(t['id'])
             root_id_list.append(t)
             if i % 1000 == 0:
-                print("{}".format(i))
+                print("Processing mentions {}".format(i))
+
+    for i, tweet in enumerate(conversation_query2):
+        t = find_root_tweet(tweet)
+        if t['id'] not in process_set:
+            process_set.add(t['id'])
+            root_id_list.append(t)
+            if i % 1000 == 0:
+                print("Processing mentioned {}".format(i))
 
     print("SET A: {} B: {} UNION: {}".format(conversation_query.count(), conversation_query2.count(), len(process_set)))
 
