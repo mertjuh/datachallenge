@@ -139,7 +139,8 @@ def import_conversation_trees_from_db(user_id):
         importer = JsonImporter()
         r1 = json_util.dumps(tree)
         root = importer.import_(r1)
-        print("Finding: {}".format(i))
+        if i % 1000 == 0:
+            print("Finding: {}".format(i))
         trees.append(root)
     return trees
 
@@ -161,6 +162,8 @@ for i, tree in enumerate(trees[0:amount]):
         if bottom.is_leaf:
             leaves.append(bottom)
 
+    print(root)
+    #print(analize_sentiment(root))
     #TODO: simple textblob root and leaves and then compare!
 
 # pprint.pprint(trees[0:3])
