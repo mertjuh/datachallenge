@@ -12,6 +12,7 @@ from anytree.exporter import JsonExporter
 from anytree.importer import JsonImporter
 
 # from graphviz import Digraph
+from analyzer import analize_sentiment
 
 jsonDirectory = 'C:\\Users\\mert\\Downloads\\airlines_complete\\data\\*.json'
 client = MongoClient('127.0.0.1', 27017)
@@ -55,7 +56,6 @@ def populate_node(root_node):
             process_list.insert(0, child_node)  # put on top the stack
 
 
-process_set = set()
 root_dict = dict()
 
 
@@ -82,13 +82,31 @@ def find_root_tweet(tweet):
     return root
 
 
-def export_conversation_trees_to_db(user_id):
+def export_conversation_trees_to_db(root_nodes_list):
+    # DotExporter(root_nodes_list[0]).to_picture("test.png")
+    count = 0
+    for i, tree in enumerate(root_nodes_list):
+        count = count + len(tree.descendants) + 1
+        exporter = JsonExporter(indent=2, sort_keys=True)
+        json_tree = exporter.export(tree)
+
+        collection_trees.insert_one(json.loads(json_tree))
+
+    print("Total conversation count: {}".format(count))
+    print("Average conversation length: {}".format(count / (len(root_nodes_list))))
+
+
+def generate_conversation_trees_for(user_id):
+    process_set = set()
     root_id_list = []
     root_nodes_list = []
 
     print("Selecting all tweets from id: {}...".format(user_id))
+    print("Searching all mentioning tweets...")
     conversation_query = collection.find(
         {'user.id': user_id, 'in_reply_to_user_id': {"$ne": None}})  # Mentioning somebody
+
+    print("Searching all mentioned tweets...")
     conversation_query2 = collection.find({'in_reply_to_user_id': user_id})  # Mentioned by somebody
 
     print("SET A: {} B: {} ".format(conversation_query.count(), conversation_query2.count()))
@@ -119,17 +137,7 @@ def export_conversation_trees_to_db(user_id):
         populate_node(root_nodes)
         root_nodes_list.append(root_nodes)
     pprint.pprint('Total sum of root nodes: {}'.format(len(root_id_list)))
-    # DotExporter(root_nodes_list[0]).to_picture("test.png")
-    count = 0
-    for i, tree in enumerate(root_nodes_list):
-        count = count + len(tree.descendants) + 1
-        exporter = JsonExporter(indent=2, sort_keys=True)
-        json_tree = exporter.export(tree)
-
-        collection_trees.insert_one(json.loads(json_tree))
-
-    print("Total conversation count: {}".format(count))
-    print("Average conversation length: {}".format(count / (len(root_id_list))))
+    return root_nodes_list
 
 
 def import_conversation_trees_from_db(user_id):
@@ -147,8 +155,15 @@ def import_conversation_trees_from_db(user_id):
 
 print("Running script.")
 
-# export_conversation_trees_to_db(22536055) # call this once if you wish to generate trees inside the DB.
-trees = import_conversation_trees_from_db(22536055)
+airline_id = 22536055
+trees = import_conversation_trees_from_db(airline_id)
+
+if len(trees) == 0:
+    print("There are no cached conversations in the database, generating trees now.")
+    trees = generate_conversation_trees_for(airline_id)
+    export_conversation_trees_to_db(trees)  # call this once if you wish to generate trees inside the DB.
+
+print("Retrieved: {} trees:".format(len(trees)))
 
 amount = 1
 
@@ -162,8 +177,7 @@ for i, tree in enumerate(trees[0:amount]):
         if bottom.is_leaf:
             leaves.append(bottom)
 
-    print(root)
-    #print(analize_sentiment(root))
-    #TODO: simple textblob root and leaves and then compare!
+    print("Sentiment root: {}".format(analize_sentiment(root)))
+    # TODO: simple textblob root and leaves and then compare!
 
 # pprint.pprint(trees[0:3])

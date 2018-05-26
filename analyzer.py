@@ -1,12 +1,15 @@
 from textblob import TextBlob
 import re
 import numpy as np
+
+
 def clean_text(text):
     '''
     Utility function to clean the text in a tweet by removing 
     links and special characters using regex.
     '''
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", text).split())
+
 
 def analize_sentiment(text):
     '''
@@ -20,10 +23,12 @@ def analize_sentiment(text):
         return 0
     else:
         return -1
+
+
 # We create a column with the result of the analysis:
-df['SA'] = np.array([analize_sentiment(text) for text in df['text']])
+#df['SA'] = np.array([analize_sentiment(text) for text in df['text']])
 
 # We display the updated dataframe with the new column:
-df[['text','SA']]
+#df[['text', 'SA']]
 # We count the amount of positive, neutral and negative tweets:
-df['SA'].value_counts()
+#df['SA'].value_counts()

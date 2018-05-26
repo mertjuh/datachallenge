@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from pymongo.errors import BulkWriteError, DuplicateKeyError
 
 # Everything in one directory
-jsonDirectory = 'C:\\Users\\mert\\Downloads\\airlines_complete\\data\\*.json'
+jsonDirectory = 'C:\\Users\\Mert\\Downloads\\airlines-data\\data\\*.json'
 client = MongoClient('127.0.0.1', 27017)
 db = client.datachallenge
 collection = db.conversation
@@ -46,11 +46,11 @@ def process_all_json_files(directory):
                     duplicatecount += 1
             if duplicatecount > 0:
                 print('Skipped {} amount of duplicate data.'.format(duplicatecount))
-                # try:
-                #    result = collection.insert_many(jsonlist)
-                #    print('Inserted {} out of {} documents.'.format(result.inserted_ids.__len__(), len(jsonlist)))
-                # except BulkWriteError as e:
-                #    print("BulkwriteError: {}".format(e.details))
+
+
+def sanitize_db():
+    collection.remove({"id": None})  # remove idless tweets
 
 
 process_all_json_files(jsonDirectory)
+sanitize_db()
