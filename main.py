@@ -1,6 +1,7 @@
 import json
 import glob
 import pprint
+from subprocess import call
 
 import pymongo
 from anytree import AnyNode
@@ -12,7 +13,7 @@ from pymongo.errors import BulkWriteError, DuplicateKeyError
 jsonDirectory = 'C:\\Users\\Mert\\Downloads\\airlines-data\\data\\*.json'
 client = MongoClient('127.0.0.1', 27017)
 db = client.datachallenge
-collection = db.conversation
+collection = db.tweets
 conversations = db.conversation_trees
 
 
@@ -36,27 +37,10 @@ def process_all_json_files(directory):
 
     create_indexes()
 
-    for file in jsonFiles:
-        # Opening every file.
-        with open(file, 'r') as fp:
-            duplicatecount = 0
-            jsonlist = []
-            fileCount += 1
-            print('[{}/{}]Processing: {}'.format(fileCount, total, file))
-            for cnt, line in enumerate(fp):
-                try:
-                    # One line equals one tweet and its attributes.
-                    lineJson = json.loads(line)
-                    # jsonlist.append(lineJson)
-                    result = collection.insert_one(lineJson)
-
-                    # print("Line {}: {}".format(cnt, result.inserted_id))
-                except ValueError as e:
-                    print("Line {} ERROR: {}".format(cnt, e))
-                except DuplicateKeyError as dke:
-                    duplicatecount += 1
-            if duplicatecount > 0:
-                print('Skipped {} amount of duplicate data.'.format(duplicatecount))
+    for i, file in enumerate(jsonFiles):
+        print("Processing: {} {}".format(i, file))
+        call(['C:\\Program Files\\MongoDB\\Server\\3.6\\bin\\mongoimport', '--db', 'datachallenge',
+              '--collection', 'tweets', '--file', file])
 
 
 def sanitize_db():
@@ -99,7 +83,8 @@ def process_conversations():
             populate_node(root)
 
 
-# process_all_json_files(jsonDirectory)
-# sanitize_db()
 create_indexes()
-process_conversations()
+process_all_json_files(jsonDirectory)
+sanitize_db()
+
+# process_conversations()
