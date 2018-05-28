@@ -75,9 +75,8 @@ def process_conversations():
             print(cnt)
             populate_node(root)
 
-
-create_indexes()
+# create_indexes()
 # process_all_json_files(jsonDirectory)
-sanitize_db()
+# sanitize_db()
 
 # process_conversations()

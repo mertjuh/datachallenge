@@ -95,5 +95,5 @@ def find_conversation_length(root_nodes):
     print("conversation_length: {}".format(conversation_length))
 
 
-create_indexes()
-import_all_trees_to_db()
+#create_indexes()
+#import_all_trees_to_db()

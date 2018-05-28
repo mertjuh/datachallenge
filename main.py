@@ -17,9 +17,9 @@ def create_conversation_database():
     conversation.import_all_trees_to_db()
 
 
-create_database()  # run this only once.
-create_conversation_database()  # run this once too.
+#create_database()  # run this only once.
+#create_conversation_database()  # run this once too.
 
 user_id = 22536055
 find_conversation_length(import_conversation_trees_from_db(user_id))
-get_sentiment_for(user_id)  # this function gets the sentiment basically
+#get_sentiment_for(user_id)  # this function gets the sentiment basically
