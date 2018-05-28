@@ -19,7 +19,7 @@ def create_indexes():
     pprint.pprint(list(collection.index_information()))
 
 
-def import_all_trees_to_db():
+def export_all_trees_to_db():
     print("Searching for all mentioning tweets...")
 
     node_dict = dict()
@@ -63,20 +63,6 @@ def import_all_trees_to_db():
             print("Linked {} so far...".format(linked_count))
 
     print("Conversations: {}".format(len(root_nodes)))
-
-
-def import_conversation_trees_from_db(user_id):
-    documents = collection_trees.find({"contributors": user_id})
-    trees = []
-    for tree in documents:
-        importer = JsonImporter()
-        r1 = json_util.dumps(tree)
-        root = importer.import_(r1)
-        trees.append(root)
-    return trees
-
-
-def find_conversation_length(root_nodes):
     conversation_length = 0
     for key, value in root_nodes.items():
 
@@ -95,5 +81,20 @@ def find_conversation_length(root_nodes):
     print("conversation_length: {}".format(conversation_length))
 
 
-#create_indexes()
-#import_all_trees_to_db()
+def import_conversation_trees_from_db(user_id):
+    documents = collection_trees.find({"contributors": user_id})
+    trees = []
+    for tree in documents:
+        importer = JsonImporter()
+        r1 = json_util.dumps(tree)
+        root = importer.import_(r1)
+        trees.append(root)
+    return trees
+
+
+def find_average_conversation_length(trees):
+    trees_count = len(trees)
+    conversation_count = 0
+    for tree in trees:
+        conversation_count = conversation_count + len(tree.descendants) + 1
+    return conversation_count / trees_count
