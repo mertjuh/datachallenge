@@ -18,13 +18,7 @@ def analize_sentiment(text):
     '''
     analysis = TextBlob(clean_text(text))
     return analysis.sentiment.polarity  # I think this should be fine? ..
-    '''if analysis.sentiment.polarity > 0:
-        return 1
-    elif analysis.sentiment.polarity == 0:
-        return 0
-    else:
-        return -1
-    '''
+
 
 # We create a column with the result of the analysis:
 # df['SA'] = np.array([analize_sentiment(text) for text in df['text']])

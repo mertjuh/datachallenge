@@ -2,6 +2,8 @@ import pprint
 
 from anytree import RenderTree
 
+import nltk
+import twython
 import conversation
 import databaseimporter as importer
 
@@ -27,7 +29,7 @@ def print_average_conversation_lengths(user_ids):
         user_trees = import_conversation_trees_from_db(user_id)
         avg_lengths[user_id] = find_average_conversation_length(user_trees)
     pprint.pprint(avg_lengths)
-    return  avg_lengths
+    return avg_lengths
 
 
 def print_average_sentiment_scores(user_ids):
@@ -41,14 +43,23 @@ def print_average_sentiment_scores(user_ids):
 
 # create_database()  # run this only once!
 # create_conversation_database()  # run this once too.
+# nltk.download('vader_lexicon') # run this once too.
 
-user_ids = [56377143, 106062176, 18332190,
+
+'''user_ids = [56377143, 106062176, 18332190,
             22536055, 124476322, 26223583,
             2182373406, 38676903, 1542862735,
             253340062, 218730857, 45621423,
-            20626359]
+            20626359]'''
+
+user_ids = [18332190, 22536055]
+
 # print_average_conversation_lengths(user_ids)
-print_average_sentiment_scores(user_ids)
+user_id = 18332190
+trees = import_conversation_trees_from_db(user_id)
+print("Printing sentiment for: {} children count: {}".format(user_id, len(trees)))
+
+print("SENTIMENT: ".format(get_average_sentiment_for(trees)))
 
 '''
 print("Finding conversation length..")
