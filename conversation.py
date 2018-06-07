@@ -81,10 +81,20 @@ def export_all_trees_to_db():
     print("conversation_length: {}".format(conversation_length))
 
 
-def import_conversation_trees_from_db(user_id):
+def import_conversation_trees_from_db(user_id, filter=None):
     documents = collection_trees.find({"contributors": user_id})
     trees = []
     for tree in documents:
+        if filter is not None:
+            root_tweet = collection.find_one({"id": tree['id']})
+            # pprint.pprint(root_tweet)
+            root_tweet_text = root_tweet['text'].lower()
+            if not any(f in root_tweet_text for f in filter):
+                # pprint.pprint("FOUND: {}".format(root_tweet_text))
+                continue
+            else:
+                pprint.pprint("FOUND: {}".format(root_tweet_text))
+
         importer = JsonImporter()
         r1 = json_util.dumps(tree)
         root = importer.import_(r1)

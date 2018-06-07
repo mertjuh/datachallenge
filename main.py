@@ -1,3 +1,5 @@
+import calendar
+from datetime import datetime
 import pprint
 
 from anytree import RenderTree
@@ -7,7 +9,7 @@ import twython
 import conversation
 import databaseimporter as importer
 
-from config import jsonDirectory
+from config import jsonDirectory, collection
 from conversation import find_average_conversation_length, import_conversation_trees_from_db
 from sentiment_test import get_average_sentiment_for
 
@@ -41,6 +43,54 @@ def print_average_sentiment_scores(user_ids):
     return avg_scores
 
 
+def sort_conversation_trees_by_day(trees):
+    hours_dict = dict()
+    return_hours_dict = dict()
+
+    for hour in range(0, 7):
+        hours_dict[calendar.day_name[hour]] = []
+
+    for tree in trees:
+        document = collection.find_one({"id": tree.root.id})
+        text = document['text']
+        timestamp = document['timestamp_ms']
+        created_at = document['created_at']
+
+        dat = datetime.fromtimestamp(int(timestamp) / 1000)
+        day = calendar.day_name[dat.weekday()]
+        hours_dict[day].append(tree)
+
+    for key, value in hours_dict.items():
+        # return_hours_dict[key] = find_average_conversation_length(value)
+        return_hours_dict[key] = get_average_sentiment_for(value)
+
+    return return_hours_dict
+
+
+def sort_conversation_trees_by_hour(trees):
+    hours_dict = dict()
+    return_hours_dict = dict()
+
+    for hour in range(0, 24):
+        hours_dict[hour] = []
+
+    for tree in trees:
+        document = collection.find_one({"id": tree.root.id})
+        text = document['text']
+        timestamp = document['timestamp_ms']
+        created_at = document['created_at']
+
+        dat = datetime.fromtimestamp(int(timestamp) / 1000)
+        time = (dat.hour - 2) % 24
+        hours_dict[time].append(tree)
+
+    for key, value in hours_dict.items():
+        # return_hours_dict[key] = find_average_conversation_length(value)
+        return_hours_dict[key] = get_average_sentiment_for(value)
+
+    return return_hours_dict
+
+
 # create_database()  # run this only once!
 # create_conversation_database()  # run this once too.
 # nltk.download('vader_lexicon') # run this once too.
@@ -50,16 +100,27 @@ def print_average_sentiment_scores(user_ids):
             22536055, 124476322, 26223583,
             2182373406, 38676903, 1542862735,
             253340062, 218730857, 45621423,
-            20626359]'''
+            20626359]
 
-user_ids = [18332190, 22536055]
 
-# print_average_conversation_lengths(user_ids)
-user_id = 18332190
-trees = import_conversation_trees_from_db(user_id)
-print("Printing sentiment for: {} children count: {}".format(user_id, len(trees)))
+print_average_sentiment_scores(user_ids)'''
 
-print("SENTIMENT: ".format(get_average_sentiment_for(trees)))
+filter = ["netherlands", "holland", "europe"]
+trees = import_conversation_trees_from_db(22536055,
+                                          filter=filter)  # american air: 22536055)
+
+print("Finished searching, finding sentiment...")
+sent_score = get_average_sentiment_for(trees)
+
+print("Final sentiment score is {} for the following filter: {}".format(sent_score, filter))
+
+# by_hours = sort_conversation_trees_by_hour(trees)
+# pprint.pprint(by_hours)
+
+print("-------------")
+
+# by_days = sort_conversation_trees_by_day(trees)
+# pprint.pprint(by_days)
 
 '''
 print("Finding conversation length..")

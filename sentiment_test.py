@@ -21,6 +21,7 @@ def get_average_sentiment_for(trees, use_vader=True):
     tree_count = len(trees)
     analysis_sum = 0
     total_count = 0
+
     for i, tree in enumerate(trees):
         analysis_root = perform_sentiment(use_vader, sentence=collection.find_one({"id": tree.root.id})['text'])
         for node in tree.descendants:
@@ -29,7 +30,7 @@ def get_average_sentiment_for(trees, use_vader=True):
                 result = perform_sentiment(use_vader, tweet['text']) - analysis_root  # child sentiment compared to root
                 analysis_sum = analysis_sum + result
                 total_count = total_count + 1
-        if i % 100 == 0:
+        if i % 1000 == 0:
             print("Subtree: {} children: {} average: {}".format(i, total_count, analysis_sum / total_count))
     print(
         "The total sentiment of all children is {} on a total children count of {} average: {}.".format(analysis_sum,
