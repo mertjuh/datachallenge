@@ -1,29 +1,25 @@
-from textblob import TextBlob
-import re
-import numpy as np
+from config import collection
+from conversation import import_conversation_trees_from_db
+from sentiment_test import get_average_sentiment_for
 
 
-def clean_text(text):
-    '''
-    Utility function to clean the text in a tweet by removing 
-    links and special characters using regex.
-    '''
-    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", text).split())
+def find_sentiment_for_ids(id_list, topics=None):
+    print("Doing analysis for: {} using filter topic: {}".format(id_list, topics))
+    list_length = len(id_list)
+    return_info = []
+    for index, id in enumerate(id_list,1):
+        trees = import_conversation_trees_from_db(id,
+                                                  filter=topics)
+        sent_score = get_average_sentiment_for(trees)
+        sent_score_with_filtered_id = get_average_sentiment_for(trees, ignore_id=id)
+        result = {
+            'id': id,
+            'screen_name': collection.find_one({"user.id": id})['user']['screen_name'],
+            'sentiment_score_old': sent_score,
+            'topics': topics,
+            'sentiment_score_new': sent_score_with_filtered_id
+        }
+        print("[{}/{}] Finished analysis for: {}".format(index, list_length, result['screen_name']))
 
-
-def analize_sentiment(text):
-    '''
-    Utility function to classify the polarity of a tweet
-    using textblob.
-    '''
-    analysis = TextBlob(clean_text(text))
-    return analysis.sentiment.polarity  # I think this should be fine? ..
-
-
-# We create a column with the result of the analysis:
-# df['SA'] = np.array([analize_sentiment(text) for text in df['text']])
-
-# We display the updated dataframe with the new column:
-# df[['text', 'SA']]
-# We count the amount of positive, neutral and negative tweets:
-# df['SA'].value_counts()
+        return_info.append(result)
+    return return_info

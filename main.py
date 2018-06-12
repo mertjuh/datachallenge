@@ -8,6 +8,7 @@ import nltk
 import twython
 import conversation
 import databaseimporter as importer
+from analyzer import find_sentiment_for_ids
 
 from config import jsonDirectory, collection
 from conversation import find_average_conversation_length, import_conversation_trees_from_db
@@ -101,35 +102,32 @@ def sort_conversation_trees_by_hour(trees):
             2182373406, 38676903, 1542862735,
             253340062, 218730857, 45621423,
             20626359]
-
-
-print_average_sentiment_scores(user_ids)'''
+            
+print_average_sentiment_scores(user_ids)
 
 filter = ["netherlands", "holland", "europe"]
 trees = import_conversation_trees_from_db(22536055,
                                           filter=filter)  # american air: 22536055)
-
 print("Finished searching, finding sentiment...")
 sent_score = get_average_sentiment_for(trees)
 sent_score_with_filtered_id = get_average_sentiment_for(trees, ignore_id=22536055)
 
-
 print("Final sentiment score is {} for the following filter: {}".format(sent_score, filter))
-print("Final sentiment score after filtering id: {} is {} for the following filter: {}".format(22536055, sent_score_with_filtered_id, filter))
-
-# by_hours = sort_conversation_trees_by_hour(trees)
-# pprint.pprint(by_hours)
-
-
-print("-------------")
-
-# by_days = sort_conversation_trees_by_day(trees)
-# pprint.pprint(by_days)
-
+print("Final sentiment score after filtering id: {} is {} for the following filter: {}".format(22536055,
+                                                                                               sent_score_with_filtered_id,
+                                                                                               filter))
 '''
-print("Finding conversation length..")
-conv_length = find_average_conversation_length(user_trees)
-print("Average conversation length is: {}".format(conv_length))
-print("Finding Sentiment score..")
-get_average_sentiment_for(user_trees)  # this function gets the sentiment basically
-'''
+
+# START FROM HERE:
+
+user_ids = [56377143, 106062176, 18332190,
+            22536055, 124476322, 26223583,
+            2182373406, 38676903, 1542862735,
+            253340062, 218730857, 45621423,
+            20626359]
+
+filter_topics = ["netherlands", "holland", "europe"]
+
+data = find_sentiment_for_ids(user_ids, topics=filter_topics)
+
+pprint.pprint(data)

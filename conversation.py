@@ -89,11 +89,10 @@ def import_conversation_trees_from_db(user_id, filter=None):
             root_tweet = collection.find_one({"id": tree['id']})
             # pprint.pprint(root_tweet)
             root_tweet_text = root_tweet['text'].lower()
-            if not any(f in root_tweet_text for f in filter):
-                # pprint.pprint("FOUND: {}".format(root_tweet_text))
+            if not any(f in root_tweet_text for f in filter):  # topic is not inside tweet, skip it
                 continue
-            else:
-                pprint.pprint("FOUND: {}".format(root_tweet_text))
+            #else:
+                #pprint.pprint("FOUND: {}".format(root_tweet_text))
 
         importer = JsonImporter()
         r1 = json_util.dumps(tree)

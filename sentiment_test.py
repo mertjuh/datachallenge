@@ -3,7 +3,7 @@ import pprint
 
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-from analyzer import analize_sentiment
+from textblob_sentiment import analize_sentiment
 from config import collection
 from conversation import import_conversation_trees_from_db
 
