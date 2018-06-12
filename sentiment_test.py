@@ -17,7 +17,7 @@ def perform_sentiment(use_vader, sentence):
         return analize_sentiment(sentence)
 
 
-def get_average_sentiment_for(trees, use_vader=True):
+def get_average_sentiment_for(trees, use_vader=True, ignore_id=-1):
     tree_count = len(trees)
     analysis_sum = 0
     total_count = 0
@@ -26,7 +26,10 @@ def get_average_sentiment_for(trees, use_vader=True):
         analysis_root = perform_sentiment(use_vader, sentence=collection.find_one({"id": tree.root.id})['text'])
         for node in tree.descendants:
             if node.is_leaf:
-                tweet = collection.find_one({"id": node.id})
+                if node.user_id == ignore_id and node.depth > 0:  # go to parent node and use that I think
+                    tweet = collection.find_one({"id": node.parent.id})
+                else:
+                    tweet = collection.find_one({"id": node.id})
                 result = perform_sentiment(use_vader, tweet['text']) - analysis_root  # child sentiment compared to root
                 analysis_sum = analysis_sum + result
                 total_count = total_count + 1

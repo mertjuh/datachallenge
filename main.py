@@ -111,11 +111,15 @@ trees = import_conversation_trees_from_db(22536055,
 
 print("Finished searching, finding sentiment...")
 sent_score = get_average_sentiment_for(trees)
+sent_score_with_filtered_id = get_average_sentiment_for(trees, ignore_id=22536055)
+
 
 print("Final sentiment score is {} for the following filter: {}".format(sent_score, filter))
+print("Final sentiment score after filtering id: {} is {} for the following filter: {}".format(22536055, sent_score_with_filtered_id, filter))
 
 # by_hours = sort_conversation_trees_by_hour(trees)
 # pprint.pprint(by_hours)
+
 
 print("-------------")
 
