@@ -126,7 +126,8 @@ user_ids = [56377143, 106062176, 18332190,
             253340062, 218730857, 45621423,
             20626359]
 
-filter_topics = ["netherlands", "holland", "europe"]
+filter_topics = ["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk", "conveyor belt", "damage", "missing", "belonging", "possession"]
+
 
 data = find_sentiment_for_ids(user_ids, topics=filter_topics)
 
