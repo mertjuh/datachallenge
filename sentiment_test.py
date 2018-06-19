@@ -58,20 +58,17 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
                 delta_result = result - analysis_root  # child sentiment compared to root
                 sent_list.append(delta_result)
 
-
-            #print(ignore_id)
-
+            # print(ignore_id)
+            tweet = collection.find_one({"id": node.parent.id})
             if tweet['user']['id'] == ignore_id and node.depth > 0:
                 parent_tweet = collection.find_one({"id": node.parent.id})
                 if parent_tweet['user']['id'] != ignore_id:
-                    #print("AAAAAAAAAA")
+                    # print("AAAAAAAAAA")
 
-                    print("{} to {} ".format(tweet['timestamp_ms'] ,parent_tweet['timestamp_ms'] ))
+                    # print("{} to {} ".format(tweet['timestamp_ms'] ,parent_tweet['timestamp_ms'] ))
 
-                    response_time = int(tweet['timestamp_ms']) - int(parent_tweet['timestamp_ms'])
+                    response_time = (int(tweet['timestamp_ms']) - int(parent_tweet['timestamp_ms'])) / 1000 * 60
                     response_times.append(response_time)
-
-
 
             total_count = total_count + 1
         if i % 1000 == 0:

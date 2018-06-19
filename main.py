@@ -124,6 +124,6 @@ user_ids = [56377143, 106062176, 18332190,
             20626359]
 
 filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
-data = find_sentiment_for_ids(user_ids[1:2], topics=filter_topics)  # [12:13] is last
+data = find_sentiment_for_ids(user_ids, topics=filter_topics)  # [12:13] is last
 
 pprint.pprint(data)

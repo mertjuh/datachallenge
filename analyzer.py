@@ -19,7 +19,7 @@ def find_sentiment_for_ids(id_list, topics=None):
             'id': id,
             'screen_name': screen_name,
             #  'average_conv_length':
-            'topics': topics,
+            # 'topics': topics,
             'sentiment_score_mean': sent_score['mean'],
             'sentiment_score_sd': sent_score['sd'],
             'sentiment_score_min': sent_score['min'],
