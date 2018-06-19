@@ -1,18 +1,15 @@
 import calendar
-from datetime import datetime
 import pprint
+from datetime import datetime
 
-from anytree import RenderTree
-
-import nltk
-import twython
 import conversation
 import databaseimporter as importer
 from analyzer import find_sentiment_for_ids
-
 from config import jsonDirectory, collection
 from conversation import find_average_conversation_length, import_conversation_trees_from_db
 from sentiment_test import get_average_sentiment_for
+
+import matplotlib.pyplot as plt
 
 
 def create_database():
@@ -126,8 +123,7 @@ user_ids = [56377143, 106062176, 18332190,
             253340062, 218730857, 45621423,
             20626359]
 
-filter_topics = ["netherlands", "holland", "europe"]
-
-data = find_sentiment_for_ids(user_ids, topics=filter_topics)
+filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
+data = find_sentiment_for_ids(user_ids[1:2], topics=filter_topics)  # [12:13] is last
 
 pprint.pprint(data)
