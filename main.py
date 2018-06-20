@@ -129,11 +129,15 @@ data = find_sentiment_for_ids(user_ids, topics=filter_topics)  # [12:13] is last
 
 pprint.pprint(data)
 
-#frq = data['hist_freq']
-#edges = data['hist_edges']
 
-#fig, ax = plt.subplots()
-#ax.bar(edges[:-1], frq, width=np.diff(edges), ec="k", align="edge")
-#plt.show()
+def plot_data(datapoint):
+    frq = datapoint[0]['hist_freq']
+    edges = datapoint[0]['hist_edges']
+    fig, ax = plt.subplots()
+    ax.bar(edges[:-1], frq, width=np.diff(edges), ec="k", align="edge")
+    plt.show()
+
+
+#plot_data(data[0])
 
 #print("Done showing.")
