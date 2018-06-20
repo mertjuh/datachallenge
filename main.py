@@ -1,4 +1,5 @@
 import calendar
+import numpy as np
 import pprint
 from datetime import datetime
 
@@ -123,7 +124,16 @@ user_ids = [56377143, 106062176, 18332190,
             253340062, 218730857, 45621423,
             20626359]
 
-filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
+filter_topics = ["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain", "pilot"]
 data = find_sentiment_for_ids(user_ids, topics=filter_topics)  # [12:13] is last
 
 pprint.pprint(data)
+
+#frq = data['hist_freq']
+#edges = data['hist_edges']
+
+#fig, ax = plt.subplots()
+#ax.bar(edges[:-1], frq, width=np.diff(edges), ec="k", align="edge")
+#plt.show()
+
+#print("Done showing.")

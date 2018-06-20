@@ -58,17 +58,18 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
                 delta_result = result - analysis_root  # child sentiment compared to root
                 sent_list.append(delta_result)
 
-            # print(ignore_id)
-            tweet = collection.find_one({"id": node.parent.id})
-            if tweet['user']['id'] == ignore_id and node.depth > 0:
-                parent_tweet = collection.find_one({"id": node.parent.id})
-                if parent_tweet['user']['id'] != ignore_id:
-                    # print("AAAAAAAAAA")
+            if node.parent is not None:
+                tweet = collection.find_one({"id": node.id})
+                if tweet['user']['id'] == ignore_id and node.depth > 0:
+                    parent_tweet = collection.find_one({"id": node.parent.id})
+                    if parent_tweet['user']['id'] != ignore_id:
+                        # print("AAAAAAAAAA")
 
-                    # print("{} to {} ".format(tweet['timestamp_ms'] ,parent_tweet['timestamp_ms'] ))
+                        # print("{} to {} ".format(tweet['timestamp_ms'] ,parent_tweet['timestamp_ms'] ))
 
-                    response_time = (int(tweet['timestamp_ms']) - int(parent_tweet['timestamp_ms'])) / 1000 * 60
-                    response_times.append(response_time)
+                        response_time = (int(tweet['timestamp_ms']) - int(
+                            parent_tweet['timestamp_ms'])) / (1000 * 60)  # minutes
+                        response_times.append(response_time)
 
             total_count = total_count + 1
         if i % 1000 == 0:
@@ -84,7 +85,7 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
     positive_count = 0
     neutral_count = 0
 
-    response_time = 0 if len(response_times) == 0 else np.mean(response_times)
+    response_time = None if len(response_times) == 0 else np.mean(response_times)
 
     for n in sent_list:
         if n < 0:
@@ -95,6 +96,8 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
             neutral_count += 1
 
     print("Finished total count: {}.".format(total_count))
+
+    frq, edges = np.histogram(sent_list, 10)
 
     return {
         'sd': sd,
@@ -110,6 +113,10 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
         'conv_total_tweets': total_count,
         'conv_amount': tree_count,
 
-        'response_time': response_time
+        'response_time': response_time,
+        'responses': len(response_times),
+
+        'hist_freq': frq,
+        'hist_edges': edges,
 
     }

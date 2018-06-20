@@ -30,9 +30,14 @@ def find_sentiment_for_ids(id_list, topics=None):
             'neutral_count': sent_score['neutral_count'],
 
             'conv_average_size': sent_score['conv_average_size'],
-            'conv_total_tweets': sent_score['conv_average_size'],
-            'conv_amount': sent_score['conv_average_size'],
+            'conv_total_tweets': sent_score['conv_total_tweets'],
+            'conv_amount': sent_score['conv_amount'],
 
             'response_time': sent_score['response_time'],
+            'responses': sent_score['responses'],
+
+            'hist_freq': sent_score['hist_freq'],
+            'hist_edges': sent_score['hist_edges']
+
         })
     return return_info
