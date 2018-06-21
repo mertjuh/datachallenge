@@ -1,16 +1,17 @@
 import calendar
-import numpy as np
 import pprint
 from datetime import datetime
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 import conversation
 import databaseimporter as importer
 from analyzer import find_sentiment_for_ids
 from config import jsonDirectory, collection
+from conversation import RootTweetFilterOptions
 from conversation import find_average_conversation_length, import_conversation_trees_from_db
 from sentiment_test import get_average_sentiment_for
-
-import matplotlib.pyplot as plt
 
 
 def create_database():
@@ -95,49 +96,34 @@ def sort_conversation_trees_by_hour(trees):
 # nltk.download('vader_lexicon') # run this once too.
 
 
-'''user_ids = [56377143, 106062176, 18332190,
-            22536055, 124476322, 26223583,
-            2182373406, 38676903, 1542862735,
-            253340062, 218730857, 45621423,
-            20626359]
-            
-print_average_sentiment_scores(user_ids)
-
-filter = ["netherlands", "holland", "europe"]
-trees = import_conversation_trees_from_db(22536055,
-                                          filter=filter)  # american air: 22536055)
-print("Finished searching, finding sentiment...")
-sent_score = get_average_sentiment_for(trees)
-sent_score_with_filtered_id = get_average_sentiment_for(trees, ignore_id=22536055)
-
-print("Final sentiment score is {} for the following filter: {}".format(sent_score, filter))
-print("Final sentiment score after filtering id: {} is {} for the following filter: {}".format(22536055,
-                                                                                               sent_score_with_filtered_id,
-                                                                                               filter))
-'''
-
-# START FROM HERE:
-
 user_ids = [56377143, 106062176, 18332190,
             22536055, 124476322, 26223583,
             2182373406, 38676903, 1542862735,
             253340062, 218730857, 45621423,
             20626359]
 
-filter_topics = ["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain", "pilot"]
-data = find_sentiment_for_ids(user_ids, topics=filter_topics)  # [12:13] is last
+filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
+
+data = find_sentiment_for_ids(user_ids[0:1], topics=filter_topics,
+                              root_tweet_filter_options=RootTweetFilterOptions.AIRLINE_ONLY)
 
 pprint.pprint(data)
 
 
 def plot_data(datapoint):
-    frq = datapoint[0]['hist_freq']
-    edges = datapoint[0]['hist_edges']
+    frq = datapoint['hist_freq']
+    edges = datapoint['hist_edges']
     fig, ax = plt.subplots()
     ax.bar(edges[:-1], frq, width=np.diff(edges), ec="k", align="edge")
-    plt.show()
+    ax.set_ylabel('Frequency')  # , fontsize=40)
+    ax.set_xlabel('Sentiment')  # , fontsize=40)
+    # ax.set_title('Distribution of food sentiment (unclassified entries ignored)')#, fontsize=22)
+
+    # plt.show()
+    plt.savefig("food_distribution.svg", bbox_inches='tight')
+    plt.savefig("food_distribution.pdf", bbox_inches='tight')
 
 
 #plot_data(data[0])
 
-#print("Done showing.")
+# print("Done showing.")

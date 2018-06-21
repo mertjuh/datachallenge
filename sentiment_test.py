@@ -41,13 +41,15 @@ def get_average_sentiment_for(trees, use_vader=True, ignore_id=-1):
 
 def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
     tree_count = len(trees)
-    total_count = 0
+    total_count = tree_count
 
     sent_list = []
+    root_sent_list = []
     response_times = []
 
     for i, tree in enumerate(trees):
         analysis_root = perform_sentiment(use_vader, sentence=collection.find_one({"id": tree.root.id})['text'])
+        root_sent_list.append(analysis_root)
         for node in tree.descendants:
             if node.is_leaf:
                 if node.user_id == ignore_id and node.depth > 0:  # go to parent node and use that I think
@@ -95,9 +97,26 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
         else:
             neutral_count += 1
 
+    root_negative_count = 0
+    root_neutral_count = 0
+    root_positive_count = 0
+
+    for n in root_sent_list:
+        if n < 0:
+            root_negative_count += 1
+        elif n > 0:
+            root_positive_count += 1
+        else:
+            root_neutral_count += 1
+
     print("Finished total count: {}.".format(total_count))
 
-    frq, edges = np.histogram(sent_list, 10)
+    sent_list_without_unclassified = []
+    for x in sent_list:
+        if x != 0:
+            sent_list_without_unclassified.append(x)
+
+    frq, edges = np.histogram(sent_list_without_unclassified, 30)
 
     return {
         'sd': sd,
@@ -108,6 +127,14 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
         'negative_count': negative_count,
         'positive_count': positive_count,
         'neutral_count': neutral_count,
+
+        'root_negative_count': root_negative_count,
+        'root_positive_count': root_positive_count,
+        'root_neutral_count': root_neutral_count,
+
+        'delta_negative_count': negative_count,
+        'delta_positive_count': positive_count,
+        'delta_neutral_count': neutral_count,
 
         'conv_average_size': conv_length,
         'conv_total_tweets': total_count,

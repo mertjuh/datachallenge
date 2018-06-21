@@ -1,5 +1,6 @@
 import json
 import pprint
+from enum import Enum
 
 import pymongo
 from anytree import AnyNode
@@ -81,18 +82,27 @@ def export_all_trees_to_db():
     print("conversation_length: {}".format(conversation_length))
 
 
-def import_conversation_trees_from_db(user_id, filter=None):
+class RootTweetFilterOptions(Enum):
+    AIRLINE_ONLY = 1
+    NO_AIRLINE = 2
+    BOTH = 3
+
+
+def import_conversation_trees_from_db(user_id, filter=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH):
     documents = collection_trees.find({"contributors": user_id})
     trees = []
     for tree in documents:
+        root_tweet = collection.find_one({"id": tree['id']})
+
+        if (root_tweet_filter_options == RootTweetFilterOptions.AIRLINE_ONLY and root_tweet['user']['id'] != user_id) \
+                or (
+                root_tweet_filter_options == RootTweetFilterOptions.NO_AIRLINE and root_tweet['user']['id'] == user_id):
+            continue
+
         if filter is not None:
-            root_tweet = collection.find_one({"id": tree['id']})
-            # pprint.pprint(root_tweet)
             root_tweet_text = root_tweet['text'].lower()
             if not any(f in root_tweet_text for f in filter):  # topic is not inside tweet, skip it
                 continue
-            #else:
-                #pprint.pprint("FOUND: {}".format(root_tweet_text))
 
         importer = JsonImporter()
         r1 = json_util.dumps(tree)
