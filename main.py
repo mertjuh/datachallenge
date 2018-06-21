@@ -4,9 +4,12 @@ import pprint
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+import nltk
 import numpy as np
 import seaborn as sns
 import pandas as pd
+
+import twython
 
 import conversation
 import databaseimporter as importer
@@ -124,26 +127,35 @@ user_ids = [56377143, 106062176, 18332190,
             253340062, 218730857, 45621423,
             20626359]
 
-filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
+topics = {"Food": ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"],
 
-["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk", "conveyor belt", "damage", "missing",
- "belonging", "possession"]
+          "Luggage": ["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk", "conveyor belt",
+                      "damage",
+                      "missing",
+                      "belonging", "possession"],
 
-["delay", "cancel", "wait", "postpone", "late", "slow", "abort", "suspen"]
+          "Delay": ["delay", "cancel", "wait", "postpone", "late", "slow", "abort", "suspen"],
 
-["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
-["spac", "seat", "room", "leg", "chair"]
+          "Space": ["spac", "seat", "room", "leg", "chair"],
 
-["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain", "pilot"]
+          "Service": ["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain",
+                      "pilot"]
+          }
 
-data = find_sentiment_for_ids(user_ids[0:1], topics=filter_topics,
-                              root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
-pprint.pprint(data)
+topic_values = dict()
 
-df = pd.DataFrame({"A": data[0]['sent_list'], "B": [1, 2, 3, 4, 5, 6, 7, 5, 4, 4, 3, 3, 2, 3, 4, 2]})
+for key, value in topics.items():
+    print(key)
+    data = find_sentiment_for_ids(user_ids[3:4], topics=value,
+                                  root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
+    topic_values[key] = pd.Series(data[0]['root_sent_list'])
+
+df = pd.DataFrame(topic_values)
 
 ax = sns.violinplot(data=df)
-
+plt.xlabel("Topic")
+plt.ylabel("Sentiment")
+plt.title("Sentiments for topics inside conversations.")
 plt.show()
 
 

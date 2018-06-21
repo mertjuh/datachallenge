@@ -1,9 +1,11 @@
+import nltk
 import numpy as np
 from nltk.sentiment import SentimentIntensityAnalyzer
 
 from config import collection
 from textblob_sentiment import analize_sentiment
 
+nltk.download('vader_lexicon')  # run this once too.
 analyzer = SentimentIntensityAnalyzer()
 
 
@@ -146,6 +148,7 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
         'hist_freq': frq,
         'hist_edges': edges,
 
-        'sent_list': sent_list_without_unclassified
+        'sent_list': sent_list_without_unclassified,
+        'root_sent_list': root_sent_list
 
     }
