@@ -43,7 +43,9 @@ def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootT
             'responses': sent_score['responses'],
 
             'hist_freq': sent_score['hist_freq'],
-            'hist_edges': sent_score['hist_edges']
+            'hist_edges': sent_score['hist_edges'],
+
+            'sent_list':  sent_score['sent_list']
 
         })
     return return_info

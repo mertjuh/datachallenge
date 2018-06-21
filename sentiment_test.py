@@ -146,4 +146,6 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
         'hist_freq': frq,
         'hist_edges': edges,
 
+        'sent_list': sent_list_without_unclassified
+
     }

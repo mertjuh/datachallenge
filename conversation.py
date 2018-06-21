@@ -90,8 +90,14 @@ class RootTweetFilterOptions(Enum):
 
 def import_conversation_trees_from_db(user_id, filter=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH):
     documents = collection_trees.find({"contributors": user_id})
+
+    print("Found: {} documents.".format(documents.count()))
+
     trees = []
     for tree in documents:
+
+
+
         root_tweet = collection.find_one({"id": tree['id']})
 
         if (root_tweet_filter_options == RootTweetFilterOptions.AIRLINE_ONLY and root_tweet['user']['id'] != user_id) \

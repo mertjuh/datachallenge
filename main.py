@@ -1,9 +1,12 @@
 import calendar
+
 import pprint
 from datetime import datetime
 
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+import pandas as pd
 
 import conversation
 import databaseimporter as importer
@@ -67,6 +70,25 @@ def sort_conversation_trees_by_day(trees):
     return return_hours_dict
 
 
+def count_trees_by_day_per_year(trees):
+    days_dict = dict()
+
+    for hour in range(0, 365):
+        days_dict[hour] = 0
+
+    for i, tree in enumerate(trees):
+        document = collection.find_one({"id": tree.root.id})
+        timestamp = document['timestamp_ms']
+
+        dat = datetime.fromtimestamp(int(timestamp) / 1000).timetuple().tm_yday
+
+        days_dict[dat] = days_dict[dat] + len(tree.descendants) + 1
+        if i % 10000 == 0:
+            print("Processed: {} some value: {}".format(i, days_dict[dat]))
+
+    return days_dict
+
+
 def sort_conversation_trees_by_hour(trees):
     hours_dict = dict()
     return_hours_dict = dict()
@@ -105,9 +127,14 @@ user_ids = [56377143, 106062176, 18332190,
 filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
 
 data = find_sentiment_for_ids(user_ids[0:1], topics=filter_topics,
-                              root_tweet_filter_options=RootTweetFilterOptions.AIRLINE_ONLY)
-
+                              root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
 pprint.pprint(data)
+
+df = pd.DataFrame({"A": data[0]['sent_list']})
+
+ax = sns.violinplot(data=df)
+
+plt.show()
 
 
 def plot_data(datapoint):
@@ -124,6 +151,15 @@ def plot_data(datapoint):
     plt.savefig("food_distribution.pdf", bbox_inches='tight')
 
 
-#plot_data(data[0])
+def sorted_over_year(user_id):
+    trees = import_conversation_trees_from_db(user_id,
+                                              root_tweet_filter_options=RootTweetFilterOptions.BOTH)
+    sorted = count_trees_by_day_per_year(trees)
+    pprint.pprint(sorted)
+
+# plot_data(data[0])
 
 # print("Done showing.")
+
+
+# sorted_over_year(22536055)
