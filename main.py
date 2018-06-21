@@ -126,11 +126,21 @@ user_ids = [56377143, 106062176, 18332190,
 
 filter_topics = ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
 
+["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk", "conveyor belt", "damage", "missing",
+ "belonging", "possession"]
+
+["delay", "cancel", "wait", "postpone", "late", "slow", "abort", "suspen"]
+
+["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"]
+["spac", "seat", "room", "leg", "chair"]
+
+["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain", "pilot"]
+
 data = find_sentiment_for_ids(user_ids[0:1], topics=filter_topics,
                               root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
 pprint.pprint(data)
 
-df = pd.DataFrame({"A": data[0]['sent_list']})
+df = pd.DataFrame({"A": data[0]['sent_list'], "B": [1, 2, 3, 4, 5, 6, 7, 5, 4, 4, 3, 3, 2, 3, 4, 2]})
 
 ax = sns.violinplot(data=df)
 
