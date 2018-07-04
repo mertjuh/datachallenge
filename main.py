@@ -123,55 +123,53 @@ def sort_conversation_trees_by_hour(trees):
     return return_hours_dict
 
 
-# create_database()  # run this only once!
-# create_conversation_database()  # run this once too.
-# nltk.download('vader_lexicon') # run this once too.
-
-
 user_ids = [56377143, 106062176, 18332190,
             22536055, 124476322, 26223583,
             2182373406, 38676903, 1542862735,
             253340062, 218730857, 45621423,
             20626359]
 
-topics = {"Food": ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"],
 
-          "Luggage": ["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk", "conveyor belt",
-                      "damage",
-                      "missing",
-                      "belonging", "possession"],
+def violin_plot(use_root=False):
+    topics = {"Food": ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"],
 
-          "Delay": ["delay", "cancel", "wait", "postpone", "late", "slow", "abort", "suspen"],
+              "Luggage": ["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk",
+                          "conveyor belt",
+                          "damage",
+                          "missing",
+                          "belonging", "possession"],
 
-          "Space": ["spac", "seat", "room", "leg", "chair"],
+              "Delay": ["delay", "cancel", "wait", "postpone", "late", "slow", "abort", "suspen"],
 
-          "Service": ["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain",
-                      "pilot"]
-          }
+              "Space": ["spac", "seat", "room", "leg", "chair"],
 
+              "Service": ["service", "assistance", "help", "steward", "air host", "cabin crew", "hostess", "captain",
+                          "pilot"]
+              }
+    topic_values = dict()
 
+    for key, value in topics.items():
+        print(key)
+        data = find_sentiment_for_ids(user_ids[1:2], topics=value,  # [3:4] is american air sliced.
+                                      root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
 
+        if use_root:
+            topic_values[key] = pd.Series(data[0]['root_sent_list'])
+        else:
+            topic_values[key] = pd.Series(data[0]['sent_list'])
 
+    df = pd.DataFrame(topic_values)
 
-topic_values = dict()
+    ax = sns.violinplot(data=df)
+    plt.xlabel("Topic")
+    plt.ylabel("Sentiment")
+    plt.title("Delta sentiments for topics inside conversations.")
 
-for key, value in topics.items():
-    print(key)
-    data = find_sentiment_for_ids(user_ids[3:4], topics=value,
-                                  root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
-    topic_values[key] = pd.Series(data[0]['sent_list'])
-
-df = pd.DataFrame(topic_values)
-
-ax = sns.violinplot(data=df)
-plt.xlabel("Topic")
-plt.ylabel("Sentiment")
-plt.title("Delta sentiments for topics inside conversations.")
-
-plt.savefig("root_sentiment_graph.svg", bbox_inches='tight')
-
-
-# plt.show()
+    if use_root:
+        plt.savefig("root_sentiment_graph.svg", bbox_inches='tight')
+    else:
+        plt.savefig("delta_sentiment_graph.svg", bbox_inches='tight')
+    # plt.show()
 
 
 def plot_data(datapoint):
@@ -181,7 +179,6 @@ def plot_data(datapoint):
     ax.bar(edges[:-1], frq, width=np.diff(edges), ec="k", align="edge")
     ax.set_ylabel('Frequency')  # , fontsize=40)
     ax.set_xlabel('Sentiment')  # , fontsize=40)
-    # ax.set_title('Distribution of food sentiment (unclassified entries ignored)')#, fontsize=22)
 
     # plt.show()
     plt.savefig("food_distribution.svg", bbox_inches='tight')
@@ -194,9 +191,15 @@ def sorted_over_year(user_id):
     sorted = count_trees_by_day_per_year(trees)
     pprint.pprint(sorted)
 
-# plot_data(data[0])
 
-# print("Done showing.")
+# create_database()  # run this only once!
+# create_conversation_database()  # run this once too.
 
 
-# sorted_over_year(22536055)
+
+sorted_over_year(22536055)  # returns printed list of conversations throughout the year
+
+# violin_plot(use_root=True) # returns the violin plot for the root sentiment
+# violin_plot(use_root=False) # same but for deltas
+
+pprint.pprint(find_sentiment_for_ids(user_ids[1:3], include_all_data_points=False)) # prints all gathered data

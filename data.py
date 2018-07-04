@@ -1003,9 +1003,7 @@ def food_distribution():
 def conversation_length_through_year_chart():
     plt.bar(range(len(year_data)), list(year_data.values()), align='center')
     plt.xticks(range(len(year_data)), list(year_data.keys()))
-    # # for python 2.x:
-    # plt.bar(range(len(D)), D.values(), align='center')  # python 2.x
-    # plt.xticks(range(len(D)), D.keys())  # in python 2.x
+
 
     plt.show()
 
@@ -1040,37 +1038,10 @@ def stacked_sentiment_bars():
     plt.savefig("stacked_delta.svg", bbox_inches='tight')
 
 
-def violin_sentiment_american_air():
-    sns.set_style("whitegrid")
-    list = []
-    list.append(
-        {"A": 2,
-         "B": 3
-         })
-
-    list.append({
-        "A": 5,
-        "B": 4
-    })
-    df = pd.DataFrame(list)
-    df = df.melt(var_name='groups', value_name='vals')
-
-    # frame = frame.melt(var_name='groups', value_name='vals')
-
-    # df = pd.DataFrame(tips)
-    pprint.pprint(df)
-
-    ax = sns.violinplot(x="groups", y="vals", data=df)
-
-    pprint(ax)
-
-    # sns.violinplot()
-    plt.show()
 
 
-# conversation_length_through_year_chart()
+
+#conversation_length_through_year_chart()
 # responses_sentiment_correlation()
-# food_distribution()
-# stacked_sentiment_bars()
-
-violin_sentiment_american_air()
+food_distribution()
+#stacked_sentiment_bars()

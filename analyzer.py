@@ -3,7 +3,8 @@ from conversation import import_conversation_trees_from_db, RootTweetFilterOptio
 from sentiment_test import get_average_sentiment_for, get_sentiment_info
 
 
-def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH):
+def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH,
+                           include_all_data_points=True):
     print("Doing analysis for: {} using filter topic: {}".format(id_list, topics))
     list_length = len(id_list)
     return_info = []
@@ -15,6 +16,13 @@ def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootT
                                                   root_tweet_filter_options=root_tweet_filter_options)
 
         sent_score = get_sentiment_info(trees, ignore_id=id)
+
+        if include_all_data_points:
+            sent_list_data = sent_score['sent_list'],
+            root_sent_list_data = sent_score['root_sent_list']
+        else:
+            sent_list_data = None
+            root_sent_list_data = None
 
         return_info.append({
             'id': id,
@@ -45,8 +53,8 @@ def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootT
             'hist_freq': sent_score['hist_freq'],
             'hist_edges': sent_score['hist_edges'],
 
-            'sent_list':  sent_score['sent_list'],
-            'root_sent_list': sent_score['root_sent_list']
+            'sent_list': sent_list_data,
+            'root_sent_list': root_sent_list_data
 
         })
     return return_info

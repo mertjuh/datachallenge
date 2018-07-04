@@ -19,11 +19,3 @@ def analize_sentiment(text):
     analysis = TextBlob(clean_text(text))
     return analysis.sentiment.polarity  # I think this should be fine? ..
 
-
-# We create a column with the result of the analysis:
-# df['SA'] = np.array([analize_sentiment(text) for text in df['text']])
-
-# We display the updated dataframe with the new column:
-# df[['text', 'SA']]
-# We count the amount of positive, neutral and negative tweets:
-# df['SA'].value_counts()
