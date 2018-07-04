@@ -24,4 +24,4 @@ There is another file that returns graphs which is the data.py file. This file c
 
 
 For more information about the changelog visit the github page at:
-https://github.com/mertjuh/datachallenge
+https://github.com/mertjuh/datachallenge/tree/dropped_conda
