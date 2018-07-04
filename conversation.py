@@ -27,10 +27,12 @@ def export_all_trees_to_db():
     root_nodes = dict()
 
     count = 0
+    # find all mentioning tweets, sorted by time
     cursor = collection.find({"in_reply_to_status_id": {"$ne": None}},
                              {"id": 1, "in_reply_to_status_id": 1, "timestamp_ms": 1, "user.id": 1, "_id": 0}).sort(
         "timestamp_ms", pymongo.ASCENDING)
 
+    # create a node for a tweet
     for tweet in cursor:
         count = count + 1
         tweet_node = AnyNode(id=tweet['id'], user_id=tweet['user']['id'])
@@ -41,6 +43,8 @@ def export_all_trees_to_db():
     print("Found {} mentioning tweets, linking nodes...".format(count))
 
     linked_count = 0
+
+    # look for the parent node, if it exists, add the tweet as the child node and so on.
     for key, value in node_dict.items():
         if value.parent_id in node_dict:
             value.parent = node_dict[value.parent_id]
@@ -65,6 +69,8 @@ def export_all_trees_to_db():
 
     print("Conversations: {}".format(len(root_nodes)))
     conversation_length = 0
+
+    # also store the contributors inside the tree for performance reasons since we don't have to traverse trees when looking for a certain ID
     for key, value in root_nodes.items():
 
         contributors = []
@@ -74,7 +80,7 @@ def export_all_trees_to_db():
 
         value.contributors = contributors
         exporter = JsonExporter(indent=2, sort_keys=True)
-        json_tree = exporter.export(value)
+        json_tree = exporter.export(value)  # serialize the tree and store it
 
         collection_trees.insert_one(json.loads(json_tree))
         conversation_length = conversation_length + len(value.descendants)
@@ -82,21 +88,20 @@ def export_all_trees_to_db():
     print("conversation_length: {}".format(conversation_length))
 
 
-class RootTweetFilterOptions(Enum):
+class RootTweetFilterOptions(Enum):  # filter whether we wish to include certain conversation starters
     AIRLINE_ONLY = 1
     NO_AIRLINE = 2
     BOTH = 3
 
 
 def import_conversation_trees_from_db(user_id, filter=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH):
+    '''Main function that retrieves conversations inside the database.'''
     documents = collection_trees.find({"contributors": user_id})
 
     print("Found: {} documents.".format(documents.count()))
 
     trees = []
     for tree in documents:
-
-
 
         root_tweet = collection.find_one({"id": tree['id']})
 

@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
+# This file consists of hardcoded data that was retrieved using the main.py file.
+# This is not Ideal but works for now, but could be automated in the future.
+
 food_dataset = [{'conv_amount': 2369,
                  'conv_average_size': 3.10510764035458,
                  'conv_total_tweets': 7356,
@@ -1004,7 +1007,6 @@ def conversation_length_through_year_chart():
     plt.bar(range(len(year_data)), list(year_data.values()), align='center')
     plt.xticks(range(len(year_data)), list(year_data.keys()))
 
-
     plt.show()
 
 
@@ -1038,10 +1040,7 @@ def stacked_sentiment_bars():
     plt.savefig("stacked_delta.svg", bbox_inches='tight')
 
 
-
-
-
-#conversation_length_through_year_chart()
-# responses_sentiment_correlation()
-food_distribution()
-#stacked_sentiment_bars()
+# conversation_length_through_year_chart()
+# responses_sentiment_correlation() unused in the poster
+# food_distribution() unused in the poster
+# stacked_sentiment_bars() shows the stacked barchart with negative/neutral/positive distribution

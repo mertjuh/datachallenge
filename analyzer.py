@@ -5,6 +5,8 @@ from sentiment_test import get_average_sentiment_for, get_sentiment_info
 
 def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootTweetFilterOptions.BOTH,
                            include_all_data_points=True):
+    '''Function that takes in all the airline_ids and processes them and returning the data using a list.'''
+
     print("Doing analysis for: {} using filter topic: {}".format(id_list, topics))
     list_length = len(id_list)
     return_info = []

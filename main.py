@@ -131,6 +131,7 @@ user_ids = [56377143, 106062176, 18332190,
 
 
 def violin_plot(use_root=False):
+    '''Violin plot that returns the topic sentiment values for american air.'''
     topics = {"Food": ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol"],
 
               "Luggage": ["luggage", "bag", "suitcase", "backpack", "lost", "gear", "carry-on", "trunk",
@@ -150,7 +151,7 @@ def violin_plot(use_root=False):
 
     for key, value in topics.items():
         print(key)
-        data = find_sentiment_for_ids(user_ids[1:2], topics=value,  # [3:4] is american air sliced.
+        data = find_sentiment_for_ids(user_ids[3:4], topics=value,  # [3:4] is american air sliced.
                                       root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
 
         if use_root:
@@ -173,6 +174,7 @@ def violin_plot(use_root=False):
 
 
 def plot_data(datapoint):
+    '''Deprecated function that is no longer used.'''
     frq = datapoint['hist_freq']
     edges = datapoint['hist_edges']
     fig, ax = plt.subplots()
@@ -191,15 +193,13 @@ def sorted_over_year(user_id):
     sorted = count_trees_by_day_per_year(trees)
     pprint.pprint(sorted)
 
-
-# create_database()  # run this only once!
-# create_conversation_database()  # run this once too.
-
+create_database()  # run this only once!
+create_conversation_database()  # run this once too.
 
 
-sorted_over_year(22536055)  # returns printed list of conversations throughout the year
+# sorted_over_year(22536055)  # returns printed list of conversations throughout the year
 
 # violin_plot(use_root=True) # returns the violin plot for the root sentiment
 # violin_plot(use_root=False) # same but for deltas
 
-pprint.pprint(find_sentiment_for_ids(user_ids[1:3], include_all_data_points=False)) # prints all gathered data
+# pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data
