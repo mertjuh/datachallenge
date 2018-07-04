@@ -1,15 +1,11 @@
 import calendar
-
 import pprint
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import nltk
 import numpy as np
-import seaborn as sns
 import pandas as pd
-
-import twython
+import seaborn as sns
 
 import conversation
 import databaseimporter as importer
@@ -21,17 +17,22 @@ from sentiment_test import get_average_sentiment_for
 
 
 def create_database():
+    # function that imports the tweets
+
     importer.create_indexes()
     importer.process_all_json_files(jsonDirectory)
     importer.sanitize_db()
 
 
 def create_conversation_database():
+    # map the tweets to a conversation database
     conversation.create_indexes()
     conversation.export_all_trees_to_db()
 
 
 def print_average_conversation_lengths(user_ids):
+    # creates a dictionary with the following mapping: airline_id -> average_conversation_length
+
     avg_lengths = dict()
     for user_id in user_ids:
         user_trees = import_conversation_trees_from_db(user_id)
@@ -41,6 +42,8 @@ def print_average_conversation_lengths(user_ids):
 
 
 def print_average_sentiment_scores(user_ids):
+    # creates a dictionary with the following mapping: airline_id -> average_sentiment_score
+
     avg_scores = dict()
     for user_id in user_ids:
         user_trees = import_conversation_trees_from_db(user_id)
@@ -50,11 +53,13 @@ def print_average_sentiment_scores(user_ids):
 
 
 def sort_conversation_trees_by_day(trees):
-    hours_dict = dict()
-    return_hours_dict = dict()
+    # creates a dictionary with the following mapping: weekday_number -> list of trees
+
+    day_dict = dict()
+    return_day_dict = dict()
 
     for hour in range(0, 7):
-        hours_dict[calendar.day_name[hour]] = []
+        day_dict[calendar.day_name[hour]] = []
 
     for tree in trees:
         document = collection.find_one({"id": tree.root.id})
@@ -64,16 +69,17 @@ def sort_conversation_trees_by_day(trees):
 
         dat = datetime.fromtimestamp(int(timestamp) / 1000)
         day = calendar.day_name[dat.weekday()]
-        hours_dict[day].append(tree)
+        day_dict[day].append(tree)
 
-    for key, value in hours_dict.items():
-        # return_hours_dict[key] = find_average_conversation_length(value)
-        return_hours_dict[key] = get_average_sentiment_for(value)
+    for key, value in day_dict.items():
+        # return_day_dict[key] = find_average_conversation_length(value)
+        return_day_dict[key] = get_average_sentiment_for(value)
 
-    return return_hours_dict
+    return return_day_dict
 
 
 def count_trees_by_day_per_year(trees):
+    # creates a dictionary with the following mapping: day_number -> list of trees
     days_dict = dict()
 
     for hour in range(0, 365):
@@ -93,6 +99,7 @@ def count_trees_by_day_per_year(trees):
 
 
 def sort_conversation_trees_by_hour(trees):
+    # creates a dictionary with the following mapping: hour_of_day -> list of trees
     hours_dict = dict()
     return_hours_dict = dict()
 
@@ -142,21 +149,29 @@ topics = {"Food": ["food", "drink", "meal", "eat", "drink", "beverage", "alcohol
                       "pilot"]
           }
 
+
+
+
+
 topic_values = dict()
 
 for key, value in topics.items():
     print(key)
     data = find_sentiment_for_ids(user_ids[3:4], topics=value,
                                   root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
-    topic_values[key] = pd.Series(data[0]['root_sent_list'])
+    topic_values[key] = pd.Series(data[0]['sent_list'])
 
 df = pd.DataFrame(topic_values)
 
 ax = sns.violinplot(data=df)
 plt.xlabel("Topic")
 plt.ylabel("Sentiment")
-plt.title("Sentiments for topics inside conversations.")
-plt.show()
+plt.title("Delta sentiments for topics inside conversations.")
+
+plt.savefig("root_sentiment_graph.svg", bbox_inches='tight')
+
+
+# plt.show()
 
 
 def plot_data(datapoint):

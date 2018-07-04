@@ -3,12 +3,13 @@ import pprint
 from subprocess import call
 
 import pymongo
-from anytree import AnyNode
 
-from config import collection, jsonDirectory
+from config import collection, jsonDirectory, mongo_import
 
 
 def create_indexes():
+    # Creating indexes first, then adding the data
+
     print('Creating indices... ');
 
     collection.create_index([("id", pymongo.ASCENDING)], unique=True)
@@ -32,10 +33,11 @@ def process_all_json_files(directory):
 
     for i, file in enumerate(jsonFiles):
         print("Processing: {} {}".format(i, file))
-        call(['C:\\Program Files\\MongoDB\\Server\\3.6\\bin\\mongoimport', '--db', 'datachallenge',
+        call([mongo_import, '--db', 'datachallenge',
               '--collection', 'tweets', '--file', file])
 
 
 def sanitize_db():
-    collection.remove({"id": None})  # remove idless tweets
+    # remove tweets that do not contain an ID since they are corrupted.
 
+    collection.remove({"id": None})  # remove idless tweets
