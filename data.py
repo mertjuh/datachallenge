@@ -1024,16 +1024,22 @@ def conversation_length_through_year_chart():
 
     # # for python 2.x:
     # plt.bar(range(len(D)), D.values(), align='center')  # python 2.x
-    plt.xticks( rotation=90, fontsize = 10)
+    plt.xticks(rotation=90, fontsize=10)
     ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
 
-    #plt.show()
+    # plt.show()
 
     plt.savefig("year_conversation.svg", bbox_inches='tight')
 
 
+def stacked_sentiment_bars(show_deltas=True):
+    if show_deltas:
+        delta_string = "delta_"
+        sign_string = "Δ "
+    else:
+        delta_string = "root_"
+        sign_string = ""
 
-def stacked_sentiment_bars():
     frames = []
 
     columns = []
@@ -1041,14 +1047,15 @@ def stacked_sentiment_bars():
         columns.append(entry["screen_name"])
 
     for i, entry in enumerate(dataset):
-        total = entry['delta_negative_count'] + entry['delta_neutral_count'] + entry['delta_positive_count']
+        total = entry[delta_string + 'negative_count'] + entry[delta_string + 'neutral_count'] + entry[
+            delta_string + 'positive_count']
 
         frame = {
             "abv": airlines_abv[i],
             "screen_name": entry['screen_name'],
-            "Δ negative": entry['delta_negative_count'] * 100 / total,
-            "Δ neutral": entry['delta_neutral_count'] * 100 / total,
-            "Δ positive": entry['delta_positive_count'] * 100 / total
+            sign_string + "negative": entry[delta_string + 'negative_count'] * 100 / total,
+            sign_string + "neutral": entry[delta_string + 'neutral_count'] * 100 / total,
+            sign_string + "positive": entry[delta_string + 'positive_count'] * 100 / total
         }
         pprint.pprint(frame)
         frames.append(frame)
@@ -1059,11 +1066,13 @@ def stacked_sentiment_bars():
 
     pprint.pprint(df)
     pl = df.plot.barh(stacked=True, x="abv", color=["red", "orange", "green"])
+    if show_deltas:
+        plt.savefig("stacked_delta.svg", bbox_inches='tight')
+    else:
+        plt.savefig("stacked_root.svg", bbox_inches='tight')
 
-    plt.savefig("stacked_delta.svg", bbox_inches='tight')
 
-
-conversation_length_through_year_chart()
+# conversation_length_through_year_chart()
 # responses_sentiment_correlation() unused in the poster
 # food_distribution() unused in the poster
-# stacked_sentiment_bars() shows the stacked barchart with negative/neutral/positive distribution
+# stacked_sentiment_bars(show_deltas=False)  # shows the stacked barchart with negative/neutral/positive distribution
