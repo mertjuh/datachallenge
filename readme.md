@@ -68,6 +68,8 @@ Starting from line 200, there are a few lines commented out. Uncomment the funct
 There is another file that returns graphs (stacked horizontal barcharts and the conversation throughout the year chart) which is the data.py file. This file contains hardcoded values which are printed by the ```find_sentiment_for_ids``` function on line 205 inside the main.py file. The datasets on top are basically pasted from the debug window and are used to create the graphs. This data obviously needs to be updated when the dataset changes which is a small limitation on our end.
 Update the ```dataset``` variable on line 17 inside file data.py with the printed values inside the command prompt.
 
+Same applies for the graph that displays the conversation throughout the year run or ```sorted_over_year(22536055)``` on main.py and copy the values to ```year_data``` on line 379.
+
 
 If you have everything pre-installed (first option inside the project libraries section), running the main.py works by opening command prompt and changing the current directory to the project location ```cd <PROJECT_LOCATION>``` first and then execute:
 
@@ -89,7 +91,6 @@ For option 2 (installing all dependencies manually), just run ```python.exe main
  
 
 
-Same applies for the graph that displays the conversation throughout the year run or ```sorted_over_year(22536055)``` on main.py and copy the values to ```year_data``` on line 379.
 
 For more information about the changelog visit the github page at:
 https://github.com/mertjuh/datachallenge/tree/dropped_conda
