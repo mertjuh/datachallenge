@@ -193,13 +193,13 @@ def sorted_over_year(user_id):
     sorted = count_trees_by_day_per_year(trees)
     pprint.pprint(sorted)
 
+# these two functions should be run or commented out together.
+create_database()  # run this only once to create a tweet database
+create_conversation_database()  # run this once to create a conversation database which depends on the tweet database
 
-create_database()  # run this only once!
-create_conversation_database()  # run this once too.
+# sorted_over_year(22536055)  # returns printed dictionary of conversations throughout the year
 
-# sorted_over_year(22536055)  # returns printed list of conversations throughout the year
+# violin_plot(use_root=True) # returns the violin plot for the root sentiment named root_sentiment_graph.svg
+# violin_plot(use_root=False) # same but for deltas named delta_sentiment_graph.svg
 
-# violin_plot(use_root=True) # returns the violin plot for the root sentiment
-# violin_plot(use_root=False) # same but for deltas
-
-# pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data
+# pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data for data.py
