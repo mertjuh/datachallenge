@@ -1,5 +1,7 @@
 import pprint
+from datetime import timedelta, date
 
+from matplotlib import ticker
 from matplotlib.colors import ListedColormap
 from numpy import int32, array, polyfit
 import numpy as np
@@ -1004,10 +1006,31 @@ def food_distribution():
 
 
 def conversation_length_through_year_chart():
-    plt.bar(range(len(year_data)), list(year_data.values()), align='center')
-    plt.xticks(range(len(year_data)), list(year_data.keys()))
+    print(list(year_data.values()))
 
-    plt.show()
+    date_list = []
+    for x in year_data.keys():
+        vals = (date(2016, 1, 1) + timedelta(days=x)).strftime("%d %b")
+        print(vals)
+        date_list.append(vals)
+
+    # b= plt.bar(range(len(year_data)), date_list, align='center')
+
+    ax = plt.subplot(111)
+    ax.bar(date_list, list(year_data.values()))
+    # ax.xaxis_date()
+
+    plt.title("Conversations throughout the year")
+
+    # # for python 2.x:
+    # plt.bar(range(len(D)), D.values(), align='center')  # python 2.x
+    plt.xticks( rotation=90, fontsize = 10)
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
+
+    #plt.show()
+
+    plt.savefig("year_conversation.svg", bbox_inches='tight')
+
 
 
 def stacked_sentiment_bars():
@@ -1040,7 +1063,7 @@ def stacked_sentiment_bars():
     plt.savefig("stacked_delta.svg", bbox_inches='tight')
 
 
-# conversation_length_through_year_chart()
+conversation_length_through_year_chart()
 # responses_sentiment_correlation() unused in the poster
 # food_distribution() unused in the poster
 # stacked_sentiment_bars() shows the stacked barchart with negative/neutral/positive distribution

@@ -199,7 +199,7 @@ create_conversation_database()  # run this once too.
 
 # sorted_over_year(22536055)  # returns printed list of conversations throughout the year
 
-# violin_plot(use_root=True) # returns the violin plot for the root sentiment
+#violin_plot(use_root=True) # returns the violin plot for the root sentiment
 # violin_plot(use_root=False) # same but for deltas
 
 # pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data
