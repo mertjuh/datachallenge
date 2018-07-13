@@ -1,3 +1,5 @@
+import pprint
+
 import nltk
 import numpy as np
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -119,7 +121,7 @@ def get_sentiment_info(trees, use_vader=True, ignore_id=-1):
             sent_list_without_unclassified.append(x)
 
     frq, edges = np.histogram(sent_list_without_unclassified, 30)
-
+    pprint.pprint("TYPE2: {}".format(type(root_sent_list)))
     return {
         'sd': sd,
         'mean': mean,

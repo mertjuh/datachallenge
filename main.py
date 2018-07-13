@@ -153,11 +153,12 @@ def violin_plot(use_root=False):
         print(key)
         data = find_sentiment_for_ids(user_ids[3:4], topics=value,  # [3:4] is american air sliced.
                                       root_tweet_filter_options=RootTweetFilterOptions.NO_AIRLINE)
-
+        pprint.pprint(type(data[0]['root_sent_list']))
+        pprint.pprint(type(data[0]['sent_list']))
         if use_root:
             topic_values[key] = pd.Series(data[0]['root_sent_list'])
         else:
-            topic_values[key] = pd.Series(data[0]['sent_list'])
+            topic_values[key] = pd.Series(data[0]['sent_list'][0])  # not sure why this becomes a tuple
 
     df = pd.DataFrame(topic_values)
 
@@ -192,14 +193,15 @@ def sorted_over_year(user_id):
                                               root_tweet_filter_options=RootTweetFilterOptions.BOTH)
     sorted = count_trees_by_day_per_year(trees)
     pprint.pprint(sorted)
+    return sorted
 
 # these two functions should be run or commented out together.
-create_database()  # run this only once to create a tweet database
-create_conversation_database()  # run this once to create a conversation database which depends on the tweet database
+# create_database()  # run this only once to create a tweet database
+# create_conversation_database()  # run this once to create a conversation database which depends on the tweet database
 
 # sorted_over_year(22536055)  # returns printed dictionary of conversations throughout the year
 
-# violin_plot(use_root=True) # returns the violin plot for the root sentiment named root_sentiment_graph.svg
-# violin_plot(use_root=False) # same but for deltas named delta_sentiment_graph.svg
+#violin_plot(use_root=True) # returns the violin plot for the root sentiment named root_sentiment_graph.svg
+#violin_plot(use_root=False) # same but for deltas named delta_sentiment_graph.svg
 
-# pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data for data.py
+pprint.pprint(find_sentiment_for_ids(user_ids, include_all_data_points=False)) # prints all gathered data for data.py

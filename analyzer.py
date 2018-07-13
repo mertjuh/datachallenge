@@ -1,3 +1,5 @@
+import pprint
+
 from config import collection
 from conversation import import_conversation_trees_from_db, RootTweetFilterOptions
 from sentiment_test import get_average_sentiment_for, get_sentiment_info
@@ -20,8 +22,10 @@ def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootT
         sent_score = get_sentiment_info(trees, ignore_id=id)
 
         if include_all_data_points:
+
             sent_list_data = sent_score['sent_list'],
             root_sent_list_data = sent_score['root_sent_list']
+            pprint.pprint("TYPE: {}".format(type(sent_list_data)))
         else:
             sent_list_data = None
             root_sent_list_data = None
@@ -56,7 +60,7 @@ def find_sentiment_for_ids(id_list, topics=None, root_tweet_filter_options=RootT
             'hist_edges': sent_score['hist_edges'],
 
             'sent_list': sent_list_data,
-            'root_sent_list': root_sent_list_data
+            'root_sent_list': root_sent_list_data,
 
         })
     return return_info

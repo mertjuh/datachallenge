@@ -1,7 +1,7 @@
 # Config script that contains all the settings.
 from pymongo import MongoClient
 
-jsonDirectory = 'C:\\Users\\20166300\\Downloads\\airlines_complete\\data\\*.json'  # Main folder that contains the tweets
+jsonDirectory = 'C:\\Users\\Mert\\Downloads\\airlines-data\\testdata\\*.json'  # Main folder that contains the tweets
 
 client = MongoClient('127.0.0.1', 27017)
 db = client.datachallenge
